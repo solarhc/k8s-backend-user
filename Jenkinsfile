@@ -20,6 +20,7 @@ pipeline {
         ARTIFACTS = "build/libs/**"
         DOCKER_REGISTRY = "solarhc"
         DOCKERHUB_CREDENTIAL = 'dockerhub-token'
+        PATH = "${tool 'Docker'}/bin:${env.PATH}"
     }
 
     options {

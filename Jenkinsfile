@@ -71,7 +71,9 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                docker.build "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}"
+                script {
+                    docker.build "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}"
+                }
             }
         }
 
@@ -80,9 +82,9 @@ pipeline {
                 script {
                     docker.withRegistry("", DOCKERHUB_CREDENTIAL) {
                         docker.image("${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}").push()
-                    }
+                }
 
-                    sh "docker rmi ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}"                }
+                sh "docker rmi ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}"
             }
         }
     }

@@ -49,6 +49,7 @@ pipeline {
                     ).trim()
 
                     sh "echo TAG is ${params.TAG}"
+                    sh "echo PATH is ${PATH}"
 
                     if( params.TAG.startsWith('origin') == false && params.TAG.endsWith('/main') == false ) {
                         if( params.RELEASE == true ) {

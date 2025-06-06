@@ -31,7 +31,7 @@ pipeline {
     tools {
         gradle 'Gradle 8.14.2'
         jdk 'OpenJDK 17'
-        docker 'Docker'
+        dockerTool 'Docker'
     }
 
     stages {

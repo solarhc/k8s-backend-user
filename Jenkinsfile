@@ -1,6 +1,7 @@
 #!/usr/bin/env groovy
+def APP_NAME
+def APP_VERSION
 def DOCKER_IMAGE_NAME
-def DOCKER_IMAGE_VERSION
 def PROD_BUILD = false
 pipeline {
     agent {
@@ -20,7 +21,6 @@ pipeline {
         ARTIFACTS = "build/libs/**"
         DOCKER_REGISTRY = "solarhc"
         DOCKERHUB_CREDENTIAL = 'dockerhub-token'
-        PATH = "${tool 'Docker'}/bin:${env.PATH}"
     }
 
     options {
@@ -39,18 +39,22 @@ pipeline {
         stage('Set Version') {
             steps {
                 script {
-                    DOCKER_IMAGE_NAME = sh (
-                            script: "gradle -q getDockerImageName",
+                    APP_NAME = sh (
+                            script: "gradle -q getAppName",
                             returnStdout: true
                     ).trim()
-                    DOCKER_IMAGE_VERSION = sh (
-                            script: "gradle -q getDockerImageVersion",
+                    APP_VERSION = sh (
+                            script: "gradle -q getAppVersion",
                             returnStdout: true
                     ).trim()
+
+                    DOCKER_IMAGE_NAME = "${DOCKER_REGISTRY}/${APP_NAME}:${APP_VERSION}"
+
+                    sh "echo IMAGE_NAME is ${APP_NAME}"
+                    sh "echo IMAGE_VERSION is ${APP_VERSION}"
+                    sh "echo DOCKER_IMAGE_NAME is ${DOCKER_IMAGE_NAME}"
 
                     sh "echo TAG is ${params.TAG}"
-                    sh "echo PATH is ${PATH}"
-
                     if( params.TAG.startsWith('origin') == false && params.TAG.endsWith('/main') == false ) {
                         if( params.RELEASE == true ) {
                             DOCKER_IMAGE_VERSION += '-RELEASE'
@@ -59,14 +63,11 @@ pipeline {
                             DOCKER_IMAGE_VERSION += '-TAG'
                         }
                     }
-
-                    sh "echo IMAGE_NAME is ${DOCKER_IMAGE_NAME}"
-                    sh "echo IMAGE_VERSION is ${DOCKER_IMAGE_VERSION}"
                 }
             }
         }
 
-        stage('Test & Build Application') {
+        stage('Build & Test Application') {
             steps {
                 sh "gradle clean build"
             }
@@ -75,7 +76,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}"
+                    docker.build "${DOCKER_IMAGE_NAME}"
                 }
             }
         }
@@ -84,16 +85,12 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry("", DOCKERHUB_CREDENTIAL) {
-                        docker
-                            .image("${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}")
-                            .push()
-                            .rmi()
+                        docker.image("${DOCKER_IMAGE_NAME}").push()
                     }
 
-//                     sh "docker rmi ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}"
+                    sh "docker rmi ${DOCKER_IMAGE_NAME}"
                 }
             }
         }
     }
 }
-

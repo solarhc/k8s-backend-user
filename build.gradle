@@ -39,13 +39,13 @@ tasks.named('jar') {
 	archiveClassifier = ''  // plain.jar 생성 방지
 }
 
-tasks.register('getDockerImageName') {
+tasks.register('getAppName') {
 	doLast {
 		println "${rootProject.name}"
 	}
 }
 
-tasks.register('getDockerImageVersion') {
+tasks.register('getAppVersion') {
 	doLast {
 		println "${project.version}"
 	}

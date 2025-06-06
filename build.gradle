@@ -35,6 +35,10 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+tasks.named('jar') {
+	archiveClassifier = ''  // plain.jar 생성 방지
+}
+
 tasks.register('getDockerImageName') {
 	doLast {
 		println "${rootProject.name}"

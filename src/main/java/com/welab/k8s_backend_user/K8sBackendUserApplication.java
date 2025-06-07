@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class K8sBackendUserApplication {
 
 	public static void main(String[] args) {
-		System.out.printf("jenkins build trigger   sdfa");
+		System.out.printf("jenkins build trigger safd");
 		SpringApplication.run(K8sBackendUserApplication.class, args);
 	}
 

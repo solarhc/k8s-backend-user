@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class K8sBackendUserApplication {
 
 	public static void main(String[] args) {
-		System.out.printf("jenkins build trigger test");
+		System.out.printf("jenkins build trigger");
 		SpringApplication.run(K8sBackendUserApplication.class, args);
 	}
 

@@ -10,6 +10,11 @@ pipeline {
         }
     }
 
+    triggers {
+        // 대소문자 주의! (정확한 표현: pollSCM)
+        pollSCM('H/3 * * * *')
+    }
+
     parameters {
         gitParameter branch: '', branchFilter: '.*', defaultValue: 'origin/main', description: '', listSize: '0', name: 'TAG', quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'DESCENDING_SMART', tagFilter: '*', type: 'PT_BRANCH_TAG'
         booleanParam defaultValue: false, description: '', name: 'RELEASE'

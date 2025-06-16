@@ -24,10 +24,4 @@ public class UserController {
 
         return "웰컴 투 유저 서비스: 리모트 메시지 = " + remoteMessage;
     }
-
-    @PostMapping(value = "/register")
-    public ApiResponseDto<String> register(@RequestBody @Valid SiteUserRegisterDto registerDto) {
-        siteUserService.registerUser(registerDto);
-        return ApiResponseDto.defaultOk();
-    }
 }
